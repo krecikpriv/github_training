@@ -4,8 +4,10 @@ on:
   #push:
   workflow_dispatch:
   #pull_request:
-  #schedule:
-  #  - cron: "15 * * * *"
+  schedule:
+    - cron: "15 * * * *"
+    - cron: "0 0 * * 2"
+
 
 jobs:
   echo:
