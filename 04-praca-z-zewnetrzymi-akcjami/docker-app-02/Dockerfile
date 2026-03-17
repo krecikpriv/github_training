@@ -9,7 +9,7 @@ RUN mkdir -p /usr/share/nginx/html/assets \
        -o /usr/share/nginx/html/assets/wall.jpg
 
 # Skopiuj nasz plik HTML do katalogu Nginx
-COPY ./index.html /usr/share/nginx/html/index.html
+COPY index.html /usr/share/nginx/html/index.html
 
 
 # Nginx nasłuchuje na porcie 80
