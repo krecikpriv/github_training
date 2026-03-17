@@ -25,3 +25,10 @@ jobs:
         run: |
           echo "To job działający na macOS"
           echo "Działam na systemie ${{runner.os}}"
+  self-hosted-echo:
+    runs-on: self-hosted  
+    steps:
+      - name: Show OS
+        run: |
+          echo "To job działający na self-hosted runnerze"
+          echo "Działam na systemie ${{runner.os}}"
