@@ -1,5 +1,5 @@
 ---
-name: 05 – 1 – Event Filters and Activity Types
+name: 05 – 01 – Event Filters and Activity Types
 on:
   workflow_dispatch:
   pull_request:
