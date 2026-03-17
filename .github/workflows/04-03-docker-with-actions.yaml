@@ -38,15 +38,15 @@ jobs:
         with:
           images: ${{env.IMAGE_NAME}}
           tags: |
-            type=raw, value=${{env.IMAGE_TAG}}
+            type=raw, value=${{env.TAG}}
 
       - name: Build image (local)
         uses: docker/build-push-action@v6
         with:
-          context: ${{github.workspace}}/04-praca-z-zewnetrzymi-akcjami/docker-app-02/Dockerfile
+          context: 04-praca-z-zewnetrzymi-akcjami/docker-app-02/Dockerfile
           push: false
           load: true
-          tags: ${{env.IMAGE_NAME}}:${{env.IMAGE_TAG}}
+          tags: ${{env.IMAGE_NAME}}:${{env.TAG}}
 
       - name: Compose up
         uses: isbang/compose-action@v2
