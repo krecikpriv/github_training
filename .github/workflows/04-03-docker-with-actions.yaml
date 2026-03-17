@@ -43,7 +43,7 @@ jobs:
       - name: Build image (local)
         uses: docker/build-push-action@v6
         with:
-          context: 04-praca-z-zewnetrzymi-akcjami/docker-app-02/Dockerfile
+          context: 04-praca-z-zewnetrzymi-akcjami/docker-app-02
           push: false
           load: true
           tags: ${{env.IMAGE_NAME}}:${{env.IMAGE_TAG}}
