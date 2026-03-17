@@ -10,22 +10,23 @@ on:
     paths-ignore:
       - '05-usung-filters-and-activity-types/dokumentacja/**'
   workflow_dispatch:
-  permissions:
-    contents: read
+  
+permissions:
+  contents: read
 
-  jobs:
-    build:
-      runs-on: ubuntu-latest
-      defaults:
-        run:
-          shell: bash
-          working-directory: szkolenie/Ćwiczenia/05-usung-filters-and-activity-types/
-      steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          node-version: '20'
-      - name: Instalacja zależności
-        run: npm ci
-      - name: Testy
-        run: npm test -- --ci
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: szkolenie/Ćwiczenia/05-usung-filters-and-activity-types/
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        node-version: '20'
+    - name: Instalacja zależności
+      run: npm ci
+    - name: Testy
+      run: npm test -- --ci
