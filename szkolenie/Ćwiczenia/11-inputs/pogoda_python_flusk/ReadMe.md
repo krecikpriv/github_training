@@ -1,0 +1,1 @@
+Pominmy testy [skip tests]
