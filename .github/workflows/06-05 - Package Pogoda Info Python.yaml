@@ -20,7 +20,7 @@ env:
 jobs:
   pogoda-info:
     name: Pobierz informacje o pogodzie
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash
@@ -43,7 +43,7 @@ jobs:
         run: |
           # Zbuduje binarkę: ./dist/pogoda
           pyinstaller --onefile start.py --name pogoda
-          
+
       - name: Sprawdzanie pogody
         run: |
           python3 ./start.py "${{ inputs.city }}" "${{ env.API_KEY }}" >> $GITHUB_STEP_SUMMARY
