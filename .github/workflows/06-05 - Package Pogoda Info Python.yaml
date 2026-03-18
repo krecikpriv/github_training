@@ -9,6 +9,10 @@ on:
         description: "City to get weather info for"
         type: string
         default: "Cracow"
+      release_tag:
+        description: "Tag / wersja releasu (np. v1.0.0)"
+        type: string
+        default: "v16.03.2026-windows"
 
 permissions:
   contents: write
@@ -53,7 +57,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: pogoda-linux-amd64
-          path: ./CWICZENIA/06-context/pogoda_python/dist/pogoda
+          path: ./szkolenie/Ćwiczenia/06-context/pogoda_python/dist/pogoda
 
       # Release - tworzy release na GitHubie i dodaje do niego binarkę
       - name: Create GitHub Release and upload binary
@@ -64,6 +68,6 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            ./CWICZENIA/06-context/pogoda_python/dist/pogoda
+            ./szkolenie/Ćwiczenia/06-context/pogoda_python/dist/pogoda
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
