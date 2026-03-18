@@ -29,12 +29,12 @@ jobs:
         tags: ${{ env.TEST_IMAGE }}
         load: true
     - name: Save image to tar
-      run: docker save ${{ env.TEST_IMAGE }} -o pogoda-image_pm.tar
+      run: docker save ${{ env.TEST_IMAGE }} -o pogoda-image.tar
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: pogoda-image_pm
-        path: pogoda-image_pm.tar
+        name: pogoda-image
+        path: pogoda-image.tar
   test:
     runs-on: ubuntu-latest
     needs: build
@@ -49,10 +49,10 @@ jobs:
     - name: Download artifact
       uses: actions/download-artifact@v4
       with:
-        name: pogoda-image_pm
+        name: pogoda-image
 
     - name: Load Docker image
-      run: docker load -i pogoda-image_pm.tar
+      run: docker load -i pogoda-image.tar
 
     - name: Validate application
       if: env.OPENWEATHER_API_KEY == ''
