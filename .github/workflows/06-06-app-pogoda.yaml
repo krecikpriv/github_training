@@ -51,11 +51,11 @@ jobs:
           echo "Logi kontenera:"
           docker logs pogoda_api || true
 
-      - name: Stop container
-        if: always()
-        run: |
-          docker stop pogoda_api || true
-          docker rm pogoda_api || true
+      #- name: Stop container
+        ##if: always()
+        #run: |
+        ##  docker stop pogoda_api || true
+        #  docker rm pogoda_api || true
 
       # --- Poniższe kroki tylko dla push na main (nie dla PR) ---
 
