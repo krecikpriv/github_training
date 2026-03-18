@@ -47,3 +47,23 @@ jobs:
       - name: Sprawdzanie pogody
         run: |
           python3 ./start.py "${{ inputs.city }}" "${{ env.API_KEY }}" >> $GITHUB_STEP_SUMMARY
+
+      # Artefakt w konkretny NR naszego uruchamienia workflow, można go potem pobrać z zakładki "Actions" -> konkretne uruchomienie -> "Artifacts"    
+      - name: Upload binary as artifact (dla wygody)
+        uses: actions/upload-artifact@v4
+        with:
+          name: pogoda-linux-amd64
+          path: ./CWICZENIA/06-context/pogoda_python/dist/pogoda
+
+      # Release - tworzy release na GitHubie i dodaje do niego binarkę
+      - name: Create GitHub Release and upload binary
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.release_tag }}
+          name: "Pogoda binary ${{ inputs.release_tag }}"
+          draft: false
+          prerelease: false
+          files: |
+            ./CWICZENIA/06-context/pogoda_python/dist/pogoda
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
