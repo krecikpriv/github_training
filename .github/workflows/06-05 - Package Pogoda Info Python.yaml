@@ -1,0 +1,49 @@
+---
+name: "06-05 - Package Pogoda Info Python"
+run-name: 06-05 - Package Pogoda Pogoda dla ${{ inputs.city }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      city:
+        description: "City to get weather info for"
+        type: string
+        default: "Cracow"
+
+permissions:
+  contents: write
+
+env:
+  MY_KLUCZYK: '7cff9972d5c98a9a47ddf6a59cb34d8e'
+  API_KEY: ${{ secrets.MY_API_KEY_W }}
+
+jobs:
+  pogoda-info:
+    name: Pobierz informacje o pogodzie
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./szkolenie/Ćwiczenia/06-context/pogoda_python
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install build dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller
+
+      - name: Build binary with PyInstaller
+        run: |
+          # Zbuduje binarkę: ./dist/pogoda
+          pyinstaller --onefile start.py --name pogoda
+          
+      - name: Sprawdzanie pogody
+        run: |
+          python3 ./start.py "${{ inputs.city }}" "${{ env.API_KEY }}" >> $GITHUB_STEP_SUMMARY
