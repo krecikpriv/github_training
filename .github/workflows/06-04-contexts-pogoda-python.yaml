@@ -1,6 +1,6 @@
 ---
-name: "06-03 - Pogoda Info"
-run-name: 06-03 - Pogoda Pogoda dla ${{ inputs.city }}
+name: "06-04 - Pogoda Info - Python"
+run-name: 06-04 - Pogoda Pogoda dla ${{ inputs.city }}
 
 on:
   workflow_dispatch:
@@ -27,4 +27,4 @@ jobs:
         uses: actions/checkout@v6
       - name: Sprawdzanie pogody
         run: |
-          bash ./start.py "${{ inputs.city }}" "${{ env.API_KEY }}" >> $GITHUB_STEP_SUMMARY
+          python3 ./start.py "${{ inputs.city }}" "${{ env.API_KEY }}" >> $GITHUB_STEP_SUMMARY
