@@ -1,0 +1,58 @@
+---
+name: 08-02 — Using Variables
+on:
+  push:
+  workflow_dispatch:
+
+env: 
+  WORKFLOW_VAR: "This is a workflow variable"
+  OVERWRITTEN_VAR: "This variable will be overwritten in the job"
+  UNDEFINED_VAR_WITH_DEFAULT: "${{ vars.UNDEFINED_VAR || 'default value'}}"
+
+jobs:
+  echo:
+    runs-on: ubuntu-latest
+    env:
+      JOB_VAR: "This is a job variable"
+      OVERWRITTEN_VAR: "This variable will be overwritten in the step"
+    steps:
+      - name: Print Env Variables
+        env:
+          STEP_VAR: "This is a step variable"
+          STEP_VAR2: "This is another step variable"
+        run: |
+          echo "Step Variable: $STEP_VAR"
+          echo "Step Variable 2: $STEP_VAR2"
+          echo "Job Variable: $JOB_VAR"
+          echo "Workflow env Variable: $WORKFLOW_VAR"
+          echo "Overwritten Variable: $OVERWRITTEN_VAR"
+      - name: Overwrite Job Variable
+        env:
+          OVERWRITTEN_VAR: "This variable has been overwritten in the step"
+        run: |
+          echo "Overwritten Variable in Step: $OVERWRITTEN_VAR"
+  echo2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Variables
+        run: |
+          echo "[Wymaga organizacji] — "Org var: $ORG_VAR"
+          echo "[Wymaga organizacji] — "Org overwritten var: $OVERWRITTEN_VAR"
+          echo "Repo var: $REPO_VAR"
+  echo-prod:
+    runs-on: ubuntu-latest
+    environment: prod
+    steps:
+      - name: Print Prod Variables
+        run: |
+          echo "[Wymaga organizacji] — Org var: $ORG_VAR"
+          echo "Org overwritten var: $OVERWRITTEN_VAR"
+          echo "Repo var: $REPO_VAR"
+          echo "Environment var: $ENV_VAR"  
+
+  echo-undefined:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Undefined Variable
+        run: |
+          echo "Org var: $UNDEFINED_VAR_WITH_DEFAULT"
