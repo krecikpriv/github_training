@@ -1,5 +1,6 @@
 ---
 name: 07 – Using Expressions
+run-name: "07 – Using Expressions | DEBUG – <'ON' jeśli wejście debug ma wartość true, w przeciwnym razie 'OFF'>"
 on:
   push:
   workflow_dispatch:
