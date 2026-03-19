@@ -1,0 +1,28 @@
+pipeline {
+    agent linux
+
+    stages {
+        stage('Test') {
+            steps {
+                echo 'Uruchamianie testów'
+            }
+        }
+        stage('Build') {
+            steps {
+                echo 'Budowanie aplikacji'
+            }
+        }        
+    }
+
+    post {
+        always {
+            echo 'Pipeline zakończony'
+        }
+        success {
+            echo 'Pipeline zakończony sukcesem'
+        }
+        failure {
+            echo 'Pipeline zakończony błędem'
+        }
+    }
+}
