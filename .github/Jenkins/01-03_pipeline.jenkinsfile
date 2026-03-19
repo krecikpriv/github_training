@@ -14,7 +14,6 @@ pipeline {
                     echo 'I will succeed now'
                     sh 'exit 0'
                 }
-                echo 'Goodbye!'
             }
         }
     }
