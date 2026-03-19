@@ -12,7 +12,7 @@ jobs:
         run: |
           # USTAWIANIE OUTPUTU STEPU zgodnie z nowym API:
           # zapis w formacie klucz=wartość do pliku wskazanego przez $GITHUB_OUTPUT
-          echo "run_job_b=no" >> "$GITHUB_OUTPUT"
+          echo "run_job_b=yes" >> "$GITHUB_OUTPUT"
     outputs:
       run_job_b: ${{ steps.set.outputs.run_job_b }}
   b:
