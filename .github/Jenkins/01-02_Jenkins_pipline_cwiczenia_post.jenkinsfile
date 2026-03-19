@@ -5,6 +5,17 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Uruchamianie testów'
+                post {
+                    always {
+                        echo 'Testy zakończone'
+                    }
+                    success {
+                        echo 'Testy zakończone sukcesem'
+                    }
+                    failure {
+                        echo 'Testy zakończone błędem'
+                    }
+                }
             }
         }
         stage('Build') {
