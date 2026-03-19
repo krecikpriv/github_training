@@ -108,7 +108,7 @@ pipeline {
         }
 
         always {
-            sh '''
+            bash '''
                 docker stop ${LOCAL_IMAGE_NAME} || true
                 docker rm ${LOCAL_IMAGE_NAME} || true
             '''
