@@ -10,6 +10,17 @@
         echo1:
             runs-on: ubuntu-latest
             steps:
+                - name: Print PR title
+                  run: |
+                    echo "The PR title is: ${{ github.event.pull_request.title }}"
+                - name: Print PR labels
+                  run: |
+                    cat << EOF
+                        ${{ toJSON(join(github.event.pull_request.labels.*.name, ', ')) }}
+                    EOF
+                - name: Bug step
+                  if: ${{failure() && !cancelled() && github.event.pull_request.title contains 'fix'}}
+                  run: echo "This PR has a bug fix label."
                 - name: Sleep for 20 seconds
                   run: sleep 20
                 - name: Failing step
