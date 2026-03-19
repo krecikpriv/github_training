@@ -19,7 +19,7 @@
                         ${{ toJSON(join(github.event.pull_request.labels.*.name, ', ')) }}
                     EOF
                 - name: Bug step
-                  if: ${{failure() && !cancelled() && github.event.pull_request.title contains 'fix'}}
+                  if: ${{ failure() && !cancelled() && contains(github.event.pull_request.title, 'fix') }}
                   run: echo "This PR has a bug fix label."
                 - name: Sleep for 20 seconds
                   run: sleep 20
