@@ -1,0 +1,13 @@
+pipeline {
+    agent any
+    triggers {
+        upstream(upstreamProjects: 'BuildProjectA, BuildProjectB', threshold: hudson.model.Result.SUCCESS)
+    }
+    stages {
+        stage('Deploy') {
+            steps {
+                echo 'Deploying after successful build of Project A or B'
+            }
+        }
+    }
+}

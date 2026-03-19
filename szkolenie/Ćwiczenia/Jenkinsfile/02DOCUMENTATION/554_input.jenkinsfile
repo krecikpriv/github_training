@@ -1,0 +1,16 @@
+pipeline {
+    agent any
+    stages {
+        stage('Setup') {
+            steps {
+                script {
+                    def userResponse = input(
+                        id: 'userInput', message: 'Please enter the environment details', parameters: [
+                        string(name: 'ENV_NAME', defaultValue: 'staging', description: 'Enter the target environment')
+                    ])
+                    echo "Deploying to ${userResponse}"
+                }
+            }
+        }
+    }
+}

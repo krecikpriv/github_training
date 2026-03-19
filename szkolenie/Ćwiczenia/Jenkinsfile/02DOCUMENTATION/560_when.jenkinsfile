@@ -1,0 +1,13 @@
+pipeline {
+    agent any
+    stages {
+        stage('Conditional Stage') {
+            when {
+                environment name: 'DEPLOY_ENV', value: 'production'
+            }
+            steps {
+                echo 'Deploying to production environment.'
+            }
+        }
+    }
+}

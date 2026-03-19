@@ -1,0 +1,16 @@
+pipeline {
+    agent any
+    tools {
+        // Określa, że JDK o nazwie 'JDK11' i Maven o nazwie 'Maven 3.6' są wymagane
+        jdk 'JDK11'
+        maven 'Maven 3.6'
+    }
+    stages {
+        stage('Build') {
+            steps {
+                // Uruchamia polecenie Maven
+                sh 'mvn clean install'
+            }
+        }
+    }
+}

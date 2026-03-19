@@ -1,0 +1,26 @@
+pipeline {
+    agent any
+    environment {
+        DEPLOY_ENV = 'production'
+        API_KEY = credentials('api-key')
+    }
+    stages {
+        stage('Build') {
+            steps {
+                echo "Building in environment ${DEPLOY_ENV}"
+                // Używa zmiennej DEPLOY_ENV w skryptach lub 
+                // poleceniach
+            }
+        }
+        stage('Deploy') {
+            environment {
+                DEPLOY_ENV = 'staging'
+            }
+            steps {
+                echo "Deploying to ${DEPLOY_ENV}"
+                // Teraz DEPLOY_ENV zostanie przesłonięte 
+                // wartością 'staging' tylko dla tego etapu
+            }
+        }
+    }
+}

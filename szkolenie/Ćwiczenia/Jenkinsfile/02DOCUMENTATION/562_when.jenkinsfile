@@ -1,0 +1,16 @@
+pipeline {
+    agent any
+    stages {
+        stage('Multibranch Deployment') {
+            when {
+                anyOf {
+                    branch 'main'
+                    branch 'staging'
+                }
+            }
+            steps {
+                echo 'Deploying to either main or staging branch.'
+            }
+        }
+    }
+}

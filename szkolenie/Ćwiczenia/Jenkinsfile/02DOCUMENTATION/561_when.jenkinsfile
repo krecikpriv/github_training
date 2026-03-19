@@ -1,0 +1,15 @@
+pipeline {
+    agent any
+    stages {
+        stage('Complex Conditions') {
+            when {
+                expression {
+                    return params.DEPLOY == 'yes' && env.BRANCH_NAME == 'develop'
+                }
+            }
+            steps {
+                echo 'Deploying with complex conditions.'
+            }
+        }
+    }
+}

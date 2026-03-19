@@ -1,0 +1,15 @@
+pipeline {
+    agent any
+    stages {
+        stage('Approval') {
+            steps {
+                input message: 'Approve deployment?', ok: 'Yes', submitter: 'team_lead'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh './deploy.sh'
+            }
+        }
+    }
+}

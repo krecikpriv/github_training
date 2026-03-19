@@ -1,0 +1,38 @@
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building...'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing...'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying...'
+            }
+        }
+    }
+    post {
+        success {
+            echo 'Build, Test and Deployment completed successfully!'
+        }
+        failure {
+            echo 'An error occurred during the build!'
+            mail to: 'team@example.com', subject: 'Build Failure', body: 'The build failed. Please check.'
+        }
+        always {
+            echo 'This will always run regardless of the build outcome.'
+        }
+        unstable {
+            echo 'The build is unstable.'
+        }
+        changed {
+            echo 'The state of the Pipeline has changed.'
+        }
+    }
+}

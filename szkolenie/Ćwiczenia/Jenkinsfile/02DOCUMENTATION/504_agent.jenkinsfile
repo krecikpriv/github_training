@@ -1,0 +1,10 @@
+pipeline {
+    agent { label 'linux-small' }
+    stages {
+        stage('Deploy') {
+            steps {
+                echo 'Deploying...'
+            }
+        }
+    }
+}

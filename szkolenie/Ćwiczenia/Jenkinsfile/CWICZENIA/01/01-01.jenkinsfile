@@ -1,0 +1,32 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Przygotowanie') {
+            steps {
+                echo 'Start pipeline'
+                echo 'Przygotowanie środowiska'
+            }
+        }
+
+        stage('Budowanie') {
+            steps {
+                echo 'Pobieranie kodu'
+                echo 'Budowanie aplikacji'
+            }
+        }
+
+        stage('Testy') {
+            steps {
+                echo 'Uruchamianie testów'
+                echo 'Testy zakończone'
+            }
+        }
+
+        stage('Wdrozenie') {
+            steps {
+                echo 'Symulacja wdrożenia aplikacji'
+            }
+        }
+    }
+}

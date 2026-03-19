@@ -1,0 +1,14 @@
+pipeline {
+    agent any
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '5')) 
+        // Zachowuje logi tylko z 5 ostatnich buildów
+    }
+    stages {
+        stage('Deploy') {
+            steps {
+                echo 'Deploying...'
+            }
+        }
+    }
+}

@@ -1,0 +1,23 @@
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building the application'
+                // Tutaj mogą być polecenia do budowania aplikacji
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing the application'
+                // Komendy do uruchomienia testów
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying the application'
+                // Instrukcje do wdrożenia aplikacji
+            }
+        }
+    }
+}

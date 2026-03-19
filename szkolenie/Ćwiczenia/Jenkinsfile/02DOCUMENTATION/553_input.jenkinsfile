@@ -1,0 +1,11 @@
+pipeline {
+    agent any
+    stages {
+        stage('Deploy to Production') {
+            steps {
+                input message: 'Are you sure you want to deploy to production?', ok: 'Deploy'
+                sh './deploy-prod.sh'
+            }
+        }
+    }
+}

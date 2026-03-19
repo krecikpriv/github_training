@@ -1,0 +1,21 @@
+pipeline {
+    agent any
+    stages {
+        stage('Platform Specific Steps') {
+            when {
+                environment name: 'OS', value: 'Windows'
+            }
+            steps {
+                bat 'run-windows-script.bat'
+            }
+        }
+        stage('Linux Specific Steps') {
+            when {
+                environment name: 'OS', value: 'Linux'
+            }
+            steps {
+                sh './run-linux-script.sh'
+            }
+        }
+    }
+}

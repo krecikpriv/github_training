@@ -1,0 +1,10 @@
+pipeline {
+    agent { docker 'node:14' }
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building a Node.js project'
+            }
+        }
+    }
+}
