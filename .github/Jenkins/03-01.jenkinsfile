@@ -1,0 +1,117 @@
+pipeline {
+    agent any
+
+    environment {
+        LOCAL_IMAGE_NAME = "webapp"
+        WORKDIR = 'szkolenie/Ćwiczenia/04-praca-z-zewnetrzymi-akcjami/docker-app-02'
+        $API_KEY = credentials('7cff9972d5c98a9a47ddf6a59cb34d8e') 
+        $DOCKERHUB_USERNAME = credentials('DOCKERHUB_USERNAME')
+        $DOCKERHUB_TOKEN = credentials('DOCKERHUB_TOKEN')
+
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scmGit(
+                    branches: [[name: '*/main']],
+                    userRemoteConfigs: [[
+                        url: 'https://github.com/krecikpriv/github_training.git'
+                    ]]
+                )
+            }
+        }
+
+        stage('Build Docker image') {
+            steps {
+                sh '''
+                    docker build -t "${LOCAL_IMAGE_NAME}:${WORKDIR}" .
+                '''
+            }
+        }
+
+        stage('Run container') {
+            steps {
+                withCredentials([string(credentialsId: $DOCKERHUB_TOKEN, variable: 'DOCKERHUB_TOKEN')]) {
+                    sh '''
+                        docker run -d \
+                          --name "${LOCAL_IMAGE_NAME}" \
+                          -p 8000:80 \  
+                          -e API_KEY=$API_KEY \
+                          "${LOCAL_IMAGE_NAME}:${WORKDIR}"
+                    '''
+                }
+            }
+        }
+
+        stage('Wait for API') {
+            steps {
+                sh '''
+                    echo "Czekam..."
+                    sleep 10
+                '''
+            }
+        }
+
+        stage('Test endpoint') {
+            steps {
+                withCredentials([string(credentialsId: $API_KEY, variable: 'API_KEY')]) {
+                    sh '''
+                        set -e
+                        curl -f "http://localhost:8000/weather?city=Warsaw&api_key=$API_KEY"
+                    '''
+                }
+            }
+        }
+
+        stage('Docker Hub Login') {
+            steps {
+                withCredentials([
+                    string(credentialsId: $DOCKERHUB_TOKEN, variable: $DOCKERHUB_USERNAME),
+                    string(credentialsId: $DOCKERHUB_USERNAME, variable: $DOCKERHUB_USERNAME)
+                ]) {
+                    sh '''
+                        echo "$___" | docker login -u "$___" --password-stdin
+                    '''
+                }
+            }
+        }
+
+        stage('Tag image') {
+            steps {
+                script {
+                    def shortSha = env.GIT_COMMIT.take(7)
+                    env.SHORT_SHA = shortSha
+                }
+
+                sh '''
+                    docker tag "${LOCAL_IMAGE_NAME}:${WORKDIR}" "$DOCKERHUB_USERNAME/${LOCAL_IMAGE_NAME}:${SHORT_SHA}"
+                '''
+            }
+        }
+
+        stage('Push image') {
+            steps {
+                sh '''
+                    docker push "$DOCKERHUB_USERNAME/${LOCAL_IMAGE_NAME}:${SHORT_SHA}"
+                '''
+            }
+        }
+    }
+
+    post {
+        failure {
+            sh '''
+                docker logs ${LOCAL_IMAGE_NAME} || true
+            '''
+        }
+
+        always {
+            sh '''
+                docker stop ${LOCAL_IMAGE_NAME} || true
+                docker rm ${LOCAL_IMAGE_NAME} || true
+            '''
+        }
+    }
+}
