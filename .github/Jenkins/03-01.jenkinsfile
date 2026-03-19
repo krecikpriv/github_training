@@ -37,7 +37,7 @@ pipeline {
                     sh '''
                         docker run -d \
                           --name "${LOCAL_IMAGE_NAME}" \
-                          -p 8000:80 \
+                          -p 8000:80
                           -e API_KEY=$API_KEY \
                           "${LOCAL_IMAGE_NAME}:${WORKDIR}"
                     '''
