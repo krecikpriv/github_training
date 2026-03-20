@@ -32,7 +32,7 @@ on:
           - prod07
 
 env:
-  WORKDIR: ./CWICZENIA/07-expressions/pogoda_python_flusk
+  WORKDIR: ./szkolenie/Ćwiczenia/07-expressions/pogoda_python_flusk
   TEST_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/python_pogoda:test
   HUB_IMAGE_BASE: ${{ secrets.DOCKERHUB_USERNAME }}/python_pogoda
   # DEPLOY_ENV:
@@ -91,7 +91,7 @@ jobs:
 
     env:
       # przerzucamy sekret do env – to możemy potem użyć w if:
-      OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
+      OPENWEATHER_API_KEY: ${{ secrets.MY_API_KEY_W }}
       # Miasto zależne od inputu przy workflow_dispatch,
       # a w innych eventach domyślnie "Warsaw"
       TEST_CITY: ${{ github.event_name == 'workflow_dispatch' && inputs.city || 'Warsaw' }}
