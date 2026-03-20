@@ -6,12 +6,4 @@ terraform {
       version = "> 2.0"
     }
   }
-  cloud {
-
-    organization = "krecikpriv"
-
-    workspaces {
-      name = "krecik_work_space_test"
-    }
-  }
 }
