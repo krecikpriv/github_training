@@ -268,4 +268,4 @@ jobs:
             deploy-app.yml \
             --limit przemek-mazurek-github-actions-droplet \
             -e "docker_image=${{ env.HUB_IMAGE_BASE }}:ansible" \
-            -e "openweather_api_key=${{ secrets.MY_API_KEY_W }}""
+            -e "openweather_api_key=${{ secrets.MY_API_KEY_W }}"
