@@ -37,7 +37,7 @@ on:
 defaults:
   run:
     shell: bash
-    working-directory: ./CWICZENIA/11-inputs
+    working-directory: ./szkolenie/Ćwiczenia/11-inputs
 
 jobs:
   build-and-optional-push:
