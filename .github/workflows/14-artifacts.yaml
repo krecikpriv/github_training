@@ -1,0 +1,37 @@
+name: 14 – Working with Artifacts
+on: 
+  workflow_dispatch:
+    inputs:
+      use-cache:
+        description: Whether to execute cache step
+        type: boolean
+        default: false
+      node-version:
+        description: Node version
+        type: choice
+        options:
+          - 18.x
+          - 20.x
+          - 21.x
+        default: 20.x
+
+jobs:
+  test-build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./szkolenie/Ćwiczenia/14-artifacts/react-app
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+
+      - name: Download cached dependencies
+        uses: actions/cache@v3
+        if: ${{ inputs.use-cache }}
+        id: cache
+        with: deps-node-modules-${{ hashFiles('14-artifacts/react-app/package-lock.json') }}
