@@ -9,7 +9,7 @@ on:
 defaults:
   run:
     shell: bash
-    working-directory: ./CWICZENIA/13-caching/nodejs02
+    working-directory: ./szkolenie/Ćwiczenia/13-caching/nodejs02
 
 jobs:
   build:
@@ -28,7 +28,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            ./CWICZENIA/13-caching/nodejs02/node_modules
+            ./szkolenie/Ćwiczenia/13-caching/nodejs02/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
