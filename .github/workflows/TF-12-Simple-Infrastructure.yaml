@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  WORKDIR: ./CWICZENIA/06-context/pogoda_python_flusk
+  WORKDIR: ./szkolenie/Ćwiczenia/06-context/pogoda_python_flusk
   TEST_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/python_pogoda:test
   HUB_IMAGE_BASE: ${{ secrets.DOCKERHUB_USERNAME }}/python_pogoda
 
@@ -50,7 +50,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-${{ matrix.environment }}-docker-buildx-${{ hashFiles('CWICZENIA/06-context/pogoda_python_flusk/Dockerfile', 'CWICZENIA/06-context/pogoda_python_flusk/requirements.txt') }}
+          key: ${{ runner.os }}-${{ matrix.environment }}-docker-buildx-${{ hashFiles('szkolenie/Ćwiczenia/06-context/pogoda_python_flusk/Dockerfile', 'szkolenie/Ćwiczenia/06-context/pogoda_python_flusk/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-${{ matrix.environment }}-docker-buildx-
 
@@ -73,7 +73,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: pogoda-image-${{ matrix.environment }}
-          path: CWICZENIA/06-context/pogoda_python_flusk/image.tar
+          path: szkolenie/Ćwiczenia/06-context/pogoda_python_flusk/image.tar
 
   # =====================
   # 2. TEST JOB
@@ -107,7 +107,7 @@ jobs:
           docker run -d \
             --name pogoda_api \
             -p 8000:8000 \
-            -e OPENWEATHER_API_KEY="${{ secrets.OPENWEATHER_API_KEY }}" \
+            -e OPENWEATHER_API_KEY="${{ secrets.MY_API_KEY_W }}" \
             "${{ env.TEST_IMAGE }}"
 
       - name: Wait for API to be ready
@@ -119,7 +119,7 @@ jobs:
         run: |
           set -e
           echo "Testowanie endpointu /weather..."
-          curl -f "http://localhost:8000/weather?city=Warsaw&api_key=${{ secrets.OPENWEATHER_API_KEY }}"
+          curl -f "http://localhost:8000/weather?city=Warsaw&api_key=${{ secrets.MY_API_KEY_W }}"
           echo
           echo "OK - endpoint /weather zwrócił odpowiedź 2xx."
 
@@ -169,7 +169,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-${{ matrix.environment }}-docker-buildx-${{ hashFiles('CWICZENIA/06-context/pogoda_python_flusk/Dockerfile', 'CWICZENIA/06-context/pogoda_python_flusk/requirements.txt') }}
+          key: ${{ runner.os }}-${{ matrix.environment }}-docker-buildx-${{ hashFiles('szkolenie/Ćwiczenia/06-context/pogoda_python_flusk/Dockerfile', 'szkolenie/Ćwiczenia/06-context/pogoda_python_flusk/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-${{ matrix.environment }}-docker-buildx-
 
@@ -224,7 +224,7 @@ jobs:
         shell: bash
         run: |
           cat <<EOF > terraform.auto.tfvars
-          ${{ secrets.AUTO_TF_VARS }}
+          ${{ secrets.DIGITALOCEAN_TOKEN }}
           EOF
 
       - name: Create backend ${{ matrix.environment }}
@@ -234,7 +234,7 @@ jobs:
           terraform { 
             cloud { 
               
-              organization = "piotr_koska_test" 
+              organization = "krecikpriv" 
 
               workspaces { 
                 name = "${{ matrix.environment }}" 
@@ -302,7 +302,7 @@ jobs:
         shell: bash
         run: |
           cat <<EOF > terraform.auto.tfvars
-          ${{ secrets.AUTO_TF_VARS }}
+          ${{ secrets.DIGITALOCEAN_TOKEN }}
           EOF
 
       - name: Create backend ${{ matrix.environment }}
@@ -312,7 +312,7 @@ jobs:
           terraform { 
             cloud { 
               
-              organization = "piotr_koska_test" 
+              organization = "krecikpriv" 
 
               workspaces { 
                 name = "${{ matrix.environment }}" 
@@ -382,7 +382,7 @@ jobs:
             deploy-app.yml \
             --limit ${{ vars.DROPLET_NAME }} \
             -e "docker_image=${{ env.HUB_IMAGE_BASE }}:ansible-${{ matrix.environment }}" \
-            -e "openweather_api_key=${{ secrets.OPENWEATHER_API_KEY }}"
+            -e "openweather_api_key=${{ secrets.MY_API_KEY_W }}"
 
   build-app-prod:
     name: Build App ${{ matrix.environment }}
@@ -413,7 +413,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-${{ matrix.environment }}-docker-buildx-${{ hashFiles('CWICZENIA/06-context/pogoda_python_flusk/Dockerfile', 'CWICZENIA/06-context/pogoda_python_flusk/requirements.txt') }}
+          key: ${{ runner.os }}-${{ matrix.environment }}-docker-buildx-${{ hashFiles('szkolenie/Ćwiczenia/06-context/pogoda_python_flusk/Dockerfile', 'szkolenie/Ćwiczenia/06-context/pogoda_python_flusk/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-${{ matrix.environment }}-docker-buildx-
 
@@ -470,7 +470,7 @@ jobs:
           docker run -d \
             --name pogoda_api \
             -p 8000:8000 \
-            -e OPENWEATHER_API_KEY="${{ secrets.OPENWEATHER_API_KEY }}" \
+            -e OPENWEATHER_API_KEY="${{ secrets.MY_API_KEY_W }}" \
             "${{ env.TEST_IMAGE }}"
 
       - name: Wait for API to be ready
@@ -482,7 +482,7 @@ jobs:
         run: |
           set -e
           echo "Testowanie endpointu /weather..."
-          curl -f "http://localhost:8000/weather?city=Warsaw&api_key=${{ secrets.OPENWEATHER_API_KEY }}"
+          curl -f "http://localhost:8000/weather?city=Warsaw&api_key=${{ secrets.MY_API_KEY_W }}"
           echo
           echo "OK - endpoint /weather zwrócił odpowiedź 2xx."
 
@@ -531,7 +531,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-${{ matrix.environment }}-docker-buildx-${{ hashFiles('CWICZENIA/06-context/pogoda_python_flusk/Dockerfile', 'CWICZENIA/06-context/pogoda_python_flusk/requirements.txt') }}
+          key: ${{ runner.os }}-${{ matrix.environment }}-docker-buildx-${{ hashFiles('szkolenie/Ćwiczenia/06-context/pogoda_python_flusk/Dockerfile', 'szkolenie/Ćwiczenia/06-context/pogoda_python_flusk/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-${{ matrix.environment }}-docker-buildx-
 
@@ -594,7 +594,7 @@ jobs:
           terraform { 
             cloud { 
               
-              organization = "piotr_koska_test" 
+              organization = "krecikpriv" 
 
               workspaces { 
                 name = "${{ matrix.environment }}" 
@@ -660,7 +660,7 @@ jobs:
         shell: bash
         run: |
           cat <<EOF > terraform.auto.tfvars
-          ${{ secrets.AUTO_TF_VARS }}
+          ${{ secrets.DIGITALOCEAN_TOKEN }}
           EOF
 
       - name: Create backend ${{ matrix.environment }}
@@ -670,7 +670,7 @@ jobs:
           terraform { 
             cloud { 
               
-              organization = "piotr_koska_test" 
+              organization = "krecikpriv" 
 
               workspaces { 
                 name = "${{ matrix.environment }}" 
@@ -740,4 +740,4 @@ jobs:
             deploy-app.yml \
             --limit ${{ vars.DROPLET_NAME }} \
             -e "docker_image=${{ env.HUB_IMAGE_BASE }}:ansible-${{ matrix.environment }}" \
-            -e "openweather_api_key=${{ secrets.OPENWEATHER_API_KEY }}"
+            -e "openweather_api_key=${{ secrets.MY_API_KEY_W }}"
