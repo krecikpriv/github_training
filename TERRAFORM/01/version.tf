@@ -8,7 +8,7 @@ terraform {
   }
   cloud {
 
-    organization = "krecikpriv "
+    organization = "krecikpriv"
 
     workspaces {
       name = "krecik_work_space_test"
