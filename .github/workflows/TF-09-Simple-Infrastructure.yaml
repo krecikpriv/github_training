@@ -131,4 +131,4 @@ jobs:
           terraform output
 
       - name: Run Ansible playbook
-        run: ansible-playbook -i inventories/hosts.yaml install-nginx.yaml --limit piotr-koska-github-actions-droplet
+        run: ansible-playbook -i inventories/hosts.yaml install-nginx.yaml --limit przemek-mazurek-github-actions-droplet
