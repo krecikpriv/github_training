@@ -1,4 +1,4 @@
-name: TF 10 - Simple Terraform Cloud Infrastructure
+name: TF 11 - Simple Terraform Cloud Infrastructure
 
 on:
   workflow_dispatch:
@@ -13,19 +13,22 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  WORKDIR: ./szkolenie/Ćwiczenia/06-context/pogoda_python_flusk
+  WORKDIR: ./CWICZENIA/06-context/pogoda_python_flusk
   TEST_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/python_pogoda:test
   HUB_IMAGE_BASE: ${{ secrets.DOCKERHUB_USERNAME }}/python_pogoda
 
-
 jobs:
 
+  # =====================
+  # 1. BUILD JOB
+  # =====================
   build-app:
     runs-on: ubuntu-latest
     if: ${{ inputs.destroy != 'true' }}
     defaults:
       run:
         working-directory: ${{ env.WORKDIR }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -33,13 +36,25 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      # 🔥 CACHE
+      - name: Cache Docker layers
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-docker-buildx-${{ hashFiles('CWICZENIA/06-context/pogoda_python_flusk/Dockerfile', 'CWICZENIA/06-context/pogoda_python_flusk/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-docker-buildx-
+
       - name: Build local test image (no push)
         uses: docker/build-push-action@v6
         with:
           context: ${{ env.WORKDIR }}
           tags: ${{ env.TEST_IMAGE }}
-          load: true        # obraz załadowany do lokalnego dockera
+          load: true
           push: false
+
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache,mode=max
 
       - name: Save image to tar
         run: |
@@ -49,7 +64,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: pogoda-image
-          path: szkolenie/Ćwiczenia/06-context/pogoda_python_flusk/image.tar
+          path: CWICZENIA/06-context/pogoda_python_flusk/image.tar
 
   # =====================
   # 2. TEST JOB
@@ -74,7 +89,7 @@ jobs:
           docker run -d \
             --name pogoda_api \
             -p 8000:8000 \
-            -e OPENWEATHER_API_KEY="${{ secrets.MY_API_KEY_W }}" \
+            -e OPENWEATHER_API_KEY="${{ secrets.OPENWEATHER_API_KEY }}" \
             "${{ env.TEST_IMAGE }}"
 
       - name: Wait for API to be ready
@@ -86,7 +101,7 @@ jobs:
         run: |
           set -e
           echo "Testowanie endpointu /weather..."
-          curl -f "http://localhost:8000/weather?city=Warsaw&api_key=${{ secrets.MY_API_KEY_W }}"
+          curl -f "http://localhost:8000/weather?city=Warsaw&api_key=${{ secrets.OPENWEATHER_API_KEY }}"
           echo
           echo "OK - endpoint /weather zwrócił odpowiedź 2xx."
 
@@ -103,7 +118,7 @@ jobs:
           docker rm pogoda_api || true
 
   # =====================
-  # 3. BUILD & PUSH (RELEASE) JOB
+  # 3. BUILD & PUSH JOB
   # =====================
   build-and-push-app:
     runs-on: ubuntu-latest
@@ -121,6 +136,15 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      # 🔥 CACHE
+      - name: Cache Docker layers
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-docker-buildx-${{ hashFiles('CWICZENIA/06-context/pogoda_python_flusk/Dockerfile', 'CWICZENIA/06-context/pogoda_python_flusk/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-docker-buildx-
+
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -136,6 +160,12 @@ jobs:
             ${{ env.HUB_IMAGE_BASE }}:ansible
             ${{ env.HUB_IMAGE_BASE }}:${{ github.sha }}
 
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache,mode=max
+
+  # =====================
+  # 4. TERRAFORM DESTROY
+  # =====================
   terrrform-destroy:
     name: Terraform Destroy
     defaults:
@@ -156,7 +186,7 @@ jobs:
         shell: bash
         run: |
           cat <<EOF > terraform.auto.tfvars
-          ${{ secrets.DIGITALOCEAN_TOKEN }}
+          ${{ secrets.AUTO_TF_VARS }}
           EOF
 
       - name: Terraform Init
@@ -184,6 +214,9 @@ jobs:
       - name: Terraform Destroy
         run: terraform destroy -auto-approve
 
+  # =====================
+  # 5. TERRAFORM APPLY
+  # =====================
   terraform-all-in-one:
     name: Terraform All-in-One
     defaults:
@@ -205,7 +238,7 @@ jobs:
         shell: bash
         run: |
           cat <<EOF > terraform.auto.tfvars
-          ${{ secrets.DIGITALOCEAN_TOKEN }}
+          ${{ secrets.AUTO_TF_VARS }}
           EOF
 
       - name: Terraform Init
@@ -225,9 +258,7 @@ jobs:
         uses: docker/setup-buildx-action@v4
 
       - name: Terraform show
-        id: show
-        run: |
-          terraform show -json tfplan > tfplan.json
+        run: terraform show -json tfplan > tfplan.json
 
       - name: Visualize Terraform plan (HTML)
         id: visualize
@@ -252,12 +283,15 @@ jobs:
         run: terraform apply tfplan
 
       - name: Terraform Output
-        id: output
+        run: terraform output
+
+      - name: Need to wait for droplet to be fully ready before running Ansible
         run: |
-          terraform output
+          echo "Czekam 20 sekund na pełną gotowość dropleta..."
+          sleep 20
 
       - name: Run Ansible playbook - install nginx
-        run: ansible-playbook -i inventories/hosts.yaml install-nginx.yaml --limit przemek-mazurek-github-actions-droplet
+        run: ansible-playbook -i inventories/hosts.yaml install-nginx.yaml --limit piotr-koska-github-actions-droplet
 
       - name: Run Ansible playbook - deploy app
         run: |
@@ -266,6 +300,6 @@ jobs:
           ansible-playbook \
             -i inventories/hosts.yaml \
             deploy-app.yml \
-            --limit przemek-mazurek-github-actions-droplet \
+            --limit piotr-koska-github-actions-droplet \
             -e "docker_image=${{ env.HUB_IMAGE_BASE }}:ansible" \
-            -e "openweather_api_key=${{ secrets.MY_API_KEY_W }}""
+            -e "openweather_api_key=${{ secrets.OPENWEATHER_API_KEY }}"
